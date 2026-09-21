@@ -62,7 +62,7 @@ export const Column: React.FC<ColumnProps> = ({
               <GripVertical className="w-4 h-4 opacity-60" />
             </div>
           )}
-          <CategoryIcon name={iconName} className="w-4 h-4 flex-shrink-0" color="var(--text-primary)" />
+          <CategoryIcon name={iconName} className="w-4 h-4 flex-shrink-0" color="var(--color-text-primary)" />
           <h2 className="font-semibold text-[13.5px] tracking-tight truncate leading-tight">
             {title}
           </h2>
@@ -73,8 +73,8 @@ export const Column: React.FC<ColumnProps> = ({
           <span
             className="text-[11px] font-bold px-1.5 py-0.2 rounded-full"
             style={{
-              backgroundColor: 'rgba(var(--text-primary-rgb), 0.12)',
-              color: 'var(--text-primary)'
+              backgroundColor: 'rgba(var(--color-text-primary-rgb), 0.12)',
+              color: 'var(--color-text-primary)'
             }}
           >
             {resources.length}
@@ -89,16 +89,16 @@ export const Column: React.FC<ColumnProps> = ({
               title={`View all ${title} resources in full page`}
               aria-label={`Open ${title} category page`}
             >
-              <ArrowRight className="w-3.5 h-3.5 text-[#1A1A1A]" />
+              <ArrowRight className="w-3.5 h-3.5 text-text-primary" />
             </button>
           )}
         </div>
       </div>
 
       {/* List Body */}
-      <div className="flex-1 bg-[#FAFAF8] border-x border-b border-[#E5E2DA] rounded-b-md p-3.5 shadow-2xs min-h-[140px] flex flex-col justify-between" style={{ minWidth: 0 }}>
+      <div className="flex-1 bg-bg-column border-x border-b border-border-column rounded-b-md p-3.5 shadow-2xs min-h-[140px] flex flex-col justify-between" style={{ minWidth: 0 }}>
         {resources.length > 0 ? (
-          <div className="space-y-0.5 divide-y divide-[#F1EFEA] pt-2">
+          <div className="space-y-0.5 divide-y divide-border-column pt-2">
             {resources.map((resource) => (
               <ResourceItem
                 key={resource.id}
@@ -114,29 +114,29 @@ export const Column: React.FC<ColumnProps> = ({
           <div className="py-6 px-2 text-center my-auto">
             {isFavoritesColumn ? (
               <div className="space-y-2">
-                <p className="text-xs text-[#777777] italic">No favorites</p>
+                <p className="text-xs text-text-muted italic">No favorites</p>
                 <button
                   type="button"
                   onClick={onOpenAddFavoriteModal}
-                  className="inline-flex items-center gap-1 text-xs text-[#1A1A1A] underline hover:text-[#B85C8A] font-medium cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs text-text-primary underline hover:text-brand-logo font-medium cursor-pointer"
                 >
-                  <Plus className="w-3 h-3 text-[#1A1A1A]" />
+                  <Plus className="w-3 h-3 text-text-primary" />
                   <span>Add to favorites</span>
                 </button>
               </div>
             ) : (
-              <p className="text-xs text-[#777777] italic">No resources found</p>
+              <p className="text-xs text-text-muted italic">No resources found</p>
             )}
           </div>
         )}
 
         {/* Column footer for favorites if empty or has items */}
         {isFavoritesColumn && resources.length > 0 && (
-          <div className="mt-3 pt-2 border-t border-[#EFECE5] flex items-center justify-between text-[11px] text-[#777777]">
+          <div className="mt-3 pt-2 border-t border-border-column flex items-center justify-between text-[11px] text-text-muted">
             <button
               type="button"
               onClick={onOpenAddFavoriteModal}
-              className="inline-flex items-center gap-1 text-[#1A1A1A] underline hover:text-[#B85C8A] cursor-pointer"
+              className="inline-flex items-center gap-1 text-text-primary underline hover:text-brand-logo cursor-pointer"
             >
               <Plus className="w-3 h-3" />
               <span>Add more</span>

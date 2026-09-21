@@ -371,10 +371,10 @@ export const BoardView: React.FC<BoardViewProps> = ({
   return (
     <div className="pb-16 pt-4 px-4 sm:px-6 max-w-full mx-auto">
       {/* Subject Filter Bar */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E5E2DA]">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border-column">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-semibold text-[#666666] flex items-center gap-1 mr-1">
-            <Filter className="w-3.5 h-3.5 text-[#1A1A1A]" />
+          <span className="text-xs font-semibold text-text-muted flex items-center gap-1 mr-1">
+            <Filter className="w-3.5 h-3.5 text-text-primary" />
             <span>Filter board</span>
           </span>
           {subjectGroups.map((group) => (
@@ -384,8 +384,8 @@ export const BoardView: React.FC<BoardViewProps> = ({
               onClick={() => setSelectedSubjectGroup(group.id)}
               className={`px-2.5 py-1 text-xs rounded transition-colors cursor-pointer ${
                 selectedSubjectGroup === group.id
-                  ? 'bg-[#1A1A1A] text-white font-medium'
-                  : 'bg-white text-[#444444] border border-[#DDD9CF] hover:bg-[#EBE8E0] hover:text-[#1A1A1A]'
+                  ? 'bg-text-primary text-bg-page font-medium'
+                  : 'bg-bg-card text-text-body border border-border-color hover:bg-border-column hover:text-text-primary'
               }`}
             >
               {group.label}
@@ -393,7 +393,7 @@ export const BoardView: React.FC<BoardViewProps> = ({
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-[#666666]">
+        <div className="flex items-center gap-2 text-xs text-text-muted">
           <span>
             Showing <strong>{selectedSubjectGroup === 'all' ? filteredCategories.length + 3 : filteredCategories.length}</strong> columns and <strong>{resources.length}</strong> resources
           </span>
@@ -422,7 +422,7 @@ export const BoardView: React.FC<BoardViewProps> = ({
             draggable
             role="listitem"
             aria-label={`Column: ${col.title}, position ${index + 1}`}
-            className={dragOverId === col.id ? 'ring-2 ring-[#8B3A2F]' : ''}
+            className={dragOverId === col.id ? 'ring-2 ring-brand-logo' : ''}
           >
             <Column
               {...col}
@@ -444,16 +444,16 @@ export const BoardView: React.FC<BoardViewProps> = ({
       </div>
 
       {/* Floating Back to Top Button */}
-      <div className="mt-12 pt-6 border-t border-[#E5E2DA] flex items-center justify-between text-xs text-[#777777]">
+      <div className="mt-12 pt-6 border-t border-border-column flex items-center justify-between text-xs text-text-muted">
         <p>
           Vault IB is a free non-commercial directory for IB Diploma Programme candidates
         </p>
         <button
           type="button"
           onClick={scrollToTop}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#DDD9CF] rounded text-[#333333] hover:text-[#1A1A1A] hover:border-[#1A1A1A] bg-white transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border-color rounded text-text-body hover:text-text-primary hover:border-text-primary bg-bg-card transition-colors cursor-pointer"
         >
-          <ArrowUp className="w-3.5 h-3.5 text-[#1A1A1A]" />
+          <ArrowUp className="w-3.5 h-3.5 text-text-primary" />
           <span>Back to Top</span>
         </button>
       </div>

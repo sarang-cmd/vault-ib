@@ -1,37 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg-page: #F4F2ED;
+  --color-bg-column: #FAFAF8;
+  --color-border-column: #E5E2DA;
+  --color-text-primary: #1A1A1A;
+  --color-text-body: #333333;
+  --color-brand-logo: #8B3A2F;
+  --color-bg-sidebar: #FAFAF8;
+  --color-bg-card: #FFFFFF;
+  --color-text-muted: #666666;
+  --color-border-color: #E5E2DA;
+}
+
+@theme (dark) {
+  --color-bg-page: #1A1A1A;
+  --color-bg-column: #242424;
+  --color-border-column: #333333;
+  --color-text-primary: #F4F2ED;
+  --color-text-body: #E0E0E0;
+  --color-brand-logo: #D98B5F;
+  --color-bg-sidebar: #242424;
+  --color-bg-card: #2D2D2D;
+  --color-text-muted: #999999;
+  --color-border-color: #444444;
 @layer base {
-  :root {
-    --bg-page: #F4F2ED;
-    --bg-column: #FAFAF8;
-    --border-column: #E5E2DA;
-    --text-primary: #1A1A1A;
-    --text-primary-rgb: 26, 26, 26;
-    --text-body: #333333;
-    --brand-logo: #8B3A2F;
-    --bg-sidebar: #FAFAF8;
-    --bg-card: #FFFFFF;
-    --text-muted: #666666;
-    --border-color: #E5E2DA;
-  }
-
-  .dark {
-    --bg-page: #1A1A1A;
-    --bg-column: #242424;
-    --border-column: #333333;
-    --text-primary: #F4F2ED;
-    --text-primary-rgb: 244, 242, 237;
-    --text-body: #E0E0E0;
-    --brand-logo: #D98B5F;
-    --bg-sidebar: #242424;
-    --bg-card: #2D2D2D;
-    --text-muted: #999999;
-    --border-color: #444444;
-  }
-
   body {
-    background-color: var(--bg-page);
-    color: var(--text-body);
+    background-color: var(--color-bg-page);
+    color: var(--color-text-body);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 15px;
     line-height: 1.6;
@@ -40,12 +36,12 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: var(--text-primary);
+    color: var(--color-text-primary);
   }
 
   /* Spec: links are plain black, underlined text */
   .vault-link {
-    color: #1A1A1A;
+    color: var(--color-text-primary);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
@@ -53,17 +49,9 @@
   }
 
   .vault-link:hover {
-    color: #000000;
+    color: var(--color-brand-logo);
     text-decoration-thickness: 1.5px;
   }
-}
-
-.dark .vault-link {
-  color: var(--text-primary);
-}
-
-.dark .vault-link:hover {
-  color: var(--brand-logo);
 }
 
 .font-logo {
@@ -76,15 +64,15 @@
   width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #EBE8E1;
+  background: var(--color-border-column);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #CCC6B8;
+  background: var(--color-text-muted);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #B3ADA0;
+  background: var(--color-text-primary);
 }
 
 /* Print styling for PDF export */
@@ -93,8 +81,8 @@
     display: none !important;
   }
   body, .print-container {
-    background: #ffffff !important;
-    color: #000000 !important;
+    background: var(--color-bg-card) !important;
+    color: var(--color-text-primary) !important;
     padding: 0 !important;
     margin: 0 !important;
   }

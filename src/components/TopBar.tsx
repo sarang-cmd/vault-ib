@@ -23,17 +23,17 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const { theme, toggleTheme } = useTheme();
   return (
-    <header className="sticky top-0 z-30 bg-[#F4F2ED] border-b border-[#E5E2DA] transition-colors">
+    <header className="sticky top-0 z-30 bg-bg-page border-b border-border-column transition-colors">
       <div className="max-w-[1720px] mx-auto px-4 sm:px-6 h-15 flex items-center justify-between">
         {/* Left: Hamburger & Wordmark Logo */}
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="p-2 -ml-2 rounded text-[#1A1A1A] hover:bg-[#EBE8E0] transition-colors focus:outline-none focus:ring-1 focus:ring-[#8B3A2F]"
+            className="p-2 -ml-2 rounded text-text-primary hover:bg-border-column transition-colors focus:outline-none focus:ring-1 focus:ring-brand-logo"
             aria-label="Open sidebar menu"
           >
-            <Menu className="w-5 h-5 text-[#1A1A1A]" />
+            <Menu className="w-5 h-5 text-text-primary" />
           </button>
 
           <button
@@ -42,10 +42,10 @@ export const TopBar: React.FC<TopBarProps> = ({
             className="flex items-center gap-2 text-left focus:outline-none group cursor-pointer"
           >
             <img src="/favicon.svg" alt="" className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0" />
-            <span className="font-logo font-extrabold text-2xl sm:text-[26px] tracking-tight text-[#8B3A2F] leading-none select-none">
+            <span className="font-logo font-extrabold text-2xl sm:text-[26px] tracking-tight text-brand-logo leading-none select-none">
               VAULT IB
             </span>
-            <span className="hidden md:inline-block text-[12px] font-medium text-[#777777] border-l border-[#DCD7CE] pl-2 leading-none">
+            <span className="hidden md:inline-block text-[12px] font-medium text-text-muted border-l border-border-color pl-2 leading-none">
               {totalCount} Free DP Resources
             </span>
           </button>
@@ -57,9 +57,9 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onNavigateDashboard}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded border border-[#D5D0C5] text-[#333333] hover:text-[#1A1A1A] hover:border-[#1A1A1A] bg-white transition-colors cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded border border-border-color text-text-body hover:text-text-primary hover:border-text-primary bg-bg-card transition-colors cursor-pointer"
           >
-            <LayoutDashboard className="w-3.5 h-3.5 text-[#1A1A1A]" />
+            <LayoutDashboard className="w-3.5 h-3.5 text-text-primary" />
             <span>Dashboard</span>
           </button>
 
@@ -67,9 +67,9 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenSubmit}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded border border-[#D5D0C5] text-[#333333] hover:text-[#1A1A1A] hover:border-[#1A1A1A] bg-white transition-colors cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded border border-border-color text-text-body hover:text-text-primary hover:border-text-primary bg-bg-card transition-colors cursor-pointer"
           >
-            <PlusCircle className="w-3.5 h-3.5 text-[#1A1A1A]" />
+            <PlusCircle className="w-3.5 h-3.5 text-text-primary" />
             <span>Suggest Link</span>
           </button>
 
@@ -77,14 +77,14 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenSearch}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#555555] bg-white border border-[#E5E2DA] rounded hover:border-[#8B3A2F] hover:text-[#1A1A1A] transition-colors shadow-2xs focus:outline-none focus:ring-1 focus:ring-[#8B3A2F] cursor-pointer"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-text-muted bg-bg-card border border-border-color rounded hover:border-brand-logo hover:text-text-primary transition-colors shadow-2xs focus:outline-none focus:ring-1 focus:ring-brand-logo cursor-pointer"
             aria-label="Search resources"
           >
-            <Search className="w-4 h-4 text-[#1A1A1A]" />
-            <span className="hidden sm:inline text-xs font-medium text-[#777777]">
+            <Search className="w-4 h-4 text-text-primary" />
+            <span className="hidden sm:inline text-xs font-medium text-text-muted">
               Search vault...
             </span>
-            <kbd className="hidden sm:inline-block text-[10px] uppercase font-sans font-medium px-1.5 py-0.5 bg-[#F4F2ED] text-[#666666] border border-[#DDD9CF] rounded">
+            <kbd className="hidden sm:inline-block text-[10px] uppercase font-sans font-medium px-1.5 py-0.5 bg-bg-page text-text-muted border border-border-color rounded">
               ⌘K
             </kbd>
           </button>
@@ -93,20 +93,20 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded text-[#444444] hover:text-[#1A1A1A] hover:bg-[#EBE8E0] transition-colors focus:outline-none focus:ring-1 focus:ring-[#8B3A2F] cursor-pointer"
+            className="p-2 rounded text-text-muted hover:text-text-primary hover:bg-border-column transition-colors focus:outline-none focus:ring-1 focus:ring-brand-logo cursor-pointer"
             aria-label="Toggle dark mode"
           >
-            {theme === 'light' ? <Sun className="w-4.5 h-4.5 text-[#1A1A1A]" /> : <Moon className="w-4.5 h-4.5 text-[#1A1A1A]" />}
+            {theme === 'light' ? <Sun className="w-4.5 h-4.5 text-text-primary" /> : <Moon className="w-4.5 h-4.5 text-text-primary" />}
           </button>
 
           {/* Settings / Gear */}
           <button
             type="button"
             onClick={onOpenSettings}
-            className="p-2 rounded text-[#444444] hover:text-[#1A1A1A] hover:bg-[#EBE8E0] transition-colors focus:outline-none focus:ring-1 focus:ring-[#8B3A2F] cursor-pointer"
+            className="p-2 rounded text-text-muted hover:text-text-primary hover:bg-border-column transition-colors focus:outline-none focus:ring-1 focus:ring-brand-logo cursor-pointer"
             aria-label="Settings"
           >
-            <Settings className="w-4.5 h-4.5 text-[#1A1A1A]" />
+            <Settings className="w-4.5 h-4.5 text-text-primary" />
           </button>
         </div>
       </div>
