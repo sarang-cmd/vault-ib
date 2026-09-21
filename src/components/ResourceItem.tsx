@@ -128,13 +128,13 @@ export const ResourceItem: React.FC<ResourceItemProps> = ({
       {/* Hover Tooltip (clean index card style, no neon glow, neutral cream background) */}
       {isHovered && (
         <div
-          className="absolute z-40 left-0 sm:left-4 top-full mt-1.5 w-72 max-w-[90vw] p-3 bg-card text-primary border border-border-color rounded shadow-md pointer-events-auto"
+          className="absolute z-40 left-0 sm:left-4 top-full mt-1.5 w-72 max-w-[90vw] p-3 bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)] rounded shadow-md pointer-events-auto"
           role="tooltip"
         >
-          <div className="flex items-start justify-between gap-2 border-b border-border-color pb-1.5 mb-2">
+          <div className="flex items-start justify-between gap-2 border-b border-[var(--border-color)] pb-1.5 mb-2">
             <div>
-              <div className="font-semibold text-xs text-primary">{resource.name}</div>
-              <div className="text-[11px] text-muted">{resource.category}</div>
+              <div className="font-semibold text-xs text-[var(--text-primary)]">{resource.name}</div>
+              <div className="text-[11px] text-[var(--text-muted)]">{resource.category}</div>
             </div>
             <span
               className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
@@ -147,30 +147,30 @@ export const ResourceItem: React.FC<ResourceItemProps> = ({
             </span>
           </div>
 
-          <p className="text-xs text-body leading-relaxed mb-2.5">
+          <p className="text-xs text-[var(--text-body)] leading-relaxed mb-2.5">
             {resource.description}
           </p>
 
-          <div className="flex items-center justify-between text-[11px] text-muted pt-1 border-t border-border-color">
-            <div className="flex items-center gap-0.5 text-brand-logo">
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] pt-1 border-t border-[var(--border-color)]">
+            <div className="flex items-center gap-0.5 text-[var(--brand-logo)]">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
                   className={`w-3 h-3 ${
                     i < resource.rank
-                      ? 'fill-brand-logo text-brand-logo'
-                      : 'text-border-color'
+                      ? 'fill-[var(--brand-logo)] text-[var(--brand-logo)]'
+                      : 'text-[var(--border-color)]'
                   }`}
                 />
               ))}
-              <span className="ml-1 text-[11px] text-muted font-medium">{resource.rank}/5</span>
+              <span className="ml-1 text-[11px] text-[var(--text-muted)] font-medium">{resource.rank}/5</span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => onSelectResource(resource)}
-                className="underline hover:text-primary cursor-pointer"
+                className="underline hover:text-[var(--brand-logo)] cursor-pointer"
               >
                 More info
               </button>
@@ -178,10 +178,10 @@ export const ResourceItem: React.FC<ResourceItemProps> = ({
                 href={resource.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 font-medium underline text-primary hover:text-brand-logo cursor-pointer"
+                className="inline-flex items-center gap-0.5 font-medium underline text-[var(--brand-logo)] hover:text-[var(--brand-logo)] cursor-pointer"
               >
                 <span>Visit</span>
-                <ExternalLink className="w-2.5 h-2.5 text-primary" />
+                <ExternalLink className="w-2.5 h-2.5 text-[var(--brand-logo)]" />
               </a>
             </div>
           </div>

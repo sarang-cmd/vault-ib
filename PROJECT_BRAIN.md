@@ -1,357 +1,301 @@
-# IB Vault - Project Brain
+# VAULT IB - PROJECT BRAIN
 
-> **Single source of truth** for the IB Vault project. Captures architecture, decisions, deployment, and operational knowledge from the entire development session.
-
----
-
-## 🎯 Project Overview
-
-| Property | Value |
-|----------|-------|
-| **Name** | IB Vault |
-| **Purpose** | Curated free/freemium study resource directory for IB Diploma Programme students |
-| **Stack** | React 19 + TypeScript + Vite + Tailwind CSS + Supabase (Postgres) + Vercel/Cloudflare Pages |
-| **Repo** | `https://github.com/sarang-cmd/ib-vault` |
-| **Production URL** | `https://ib-vault-six.vercel.app` (Vercel adds suffix when `ib-vault.vercel.app` taken) |
-| **Cost** | $0/month (Free Forever Tiers) |
+**Last Updated**: 2025-09-19  
+**Repository**: `sarang-cmd/vault-ib`  
+**Stack**: React 19 + TypeScript + Vite + Tailwind CSS + Supabase (Postgres) + Vercel  
+**Cost**: $0/month (Free Forever Tiers)
 
 ---
 
-## 🏗 Architecture
+## 🎯 PROJECT OVERVIEW
 
-### Data Layer (Hybrid: Supabase + localStorage Fallback)
-```
-src/lib/supabaseClient.ts     → Supabase client init (checks VITE_* env vars)
-src/lib/supabase.ts           → ALL data operations (Supabase when configured, else localStorage)
-src/data/resources.ts         → 168 initial resources (source of truth for migration)
-supabase/migrations/01_resources.sql  → DB schema + seed + RLS policies
-```
+**Vault IB** - A curated, community-driven directory of 168+ free and freemium study resources for the IB Diploma Programme. Organized by subject, verified by students.
 
-### Key Design Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| **Hybrid data layer** | Works in demo mode (localStorage) without Supabase; seamless upgrade to real DB |
-| **RLS for auth** | No backend server needed; Supabase handles authz via policies |
-| **Vite + Vercel** | Zero-config SPA hosting, auto-deploys on push, free tier generous |
-| **bcryptjs in browser** | Admin password hash verification client-side (demo acceptable; production → Supabase Auth) |
-| **Single-file build** | `vite-plugin-singlefile` inlines CSS/JS → single HTML for max performance |
-
-### RLS Policies (Critical for Functionality)
-
-```sql
--- Public read approved resources
-CREATE POLICY "Allow public read approved" ON public.resources
-  FOR SELECT USING (status = 'approved');
-
--- Public submit pending resources
-CREATE POLICY "Allow public insert pending" ON public.resources
-  FOR INSERT WITH CHECK (status = 'pending');
-
--- Public update status (approve/broken toggle) - ADDED LATER
-CREATE POLICY "Allow public update status" ON public.resources
-  FOR UPDATE USING (true) WITH CHECK (status IN ('approved', 'broken'));
-
--- Admin full access (when Supabase Auth enabled)
-CREATE POLICY "Allow full admin access" ON public.resources
-  FOR ALL USING (auth.role() = 'authenticated');
-```
-
-> **Key Fix**: `approveSubmission` originally did DELETE+INSERT which failed because INSERT policy only allowed `status='pending'`. Changed to `UPDATE status='approved'` + added UPDATE policy.
+**Production URLs**:
+- Primary: `https://vault-ib.vercel.app` (or `https://vault-ib-six.vercel.app`)
+- Mirror: `https://ib-vault-pro.vercel.app`
+- Dashboard: `/dashboard` route
+- Admin: `/admin` route
+- Categories: `/category/:slug` routes
 
 ---
 
-## 📊 Data Schema
+## ✅ COMPLETED FEATURES
 
-### `public.resources` Table
-```sql
-id              TEXT PRIMARY KEY
-name            TEXT NOT NULL
-url             TEXT NOT NULL
-description     TEXT NOT NULL
-category        TEXT NOT NULL
-cost            TEXT CHECK (cost IN ('Free', 'Freemium'))
-rank            INTEGER CHECK (rank BETWEEN 1 AND 5)
-is_new          BOOLEAN DEFAULT false
-added_date      DATE NOT NULL
-status          TEXT CHECK (status IN ('approved', 'pending', 'broken')) DEFAULT 'approved'
-created_at      TIMESTAMPTZ DEFAULT now()
-```
+### Core Application
+- [x] **React 19 + TypeScript + Vite** setup with Tailwind CSS v4
+- [x] **Supabase (Postgres)** integration with RLS policies
+- [x] **Vercel deployment** with Analytics + Speed Insights
+- [x] **Hybrid data layer**: Supabase when configured, localStorage fallback
+- [x] **ThemeProvider** with dark/light mode toggle (persisted in localStorage)
+- [x] **Responsive CSS Grid** with auto-fill minmax(280px, 1fr)
+- [x] **Dark mode** with CSS variables (`.dark` class on `<html>`)
 
-### Resource Categories (33 total)
-- Master Hubs & Repositories
-- Past Papers & Question Banks
-- Mathematics AA HL
-- Physics HL
-- Chemistry HL
-- Geography SL
-- English Lang&Lit SL
-- German Lang&Lit SL
-- IA / EE / TOK Exemplars & Guides
-- AI Study Tools
-- Grade & Score Calculators
-- Flashcards & Active Recall
-- YouTube Channels
-- Communities
-- Document & Paywall Access
-- Textbooks & eBooks
-- Databases & Research
-- University Application & Prep
-- + 15 more subcategories
+### Landing Page (`/dashboard`)
+- [x] **Hero section** with stats, CTA buttons, animated category groups
+- [x] **Categories organized as**: All Subjects, HSLs (HL), SLS (SL), Core & Tools
+- [x] **Quick Actions** cards: Master Hubs, Past Papers, AI Tools, Grade Calculator
+- [x] **Community Mirrors** section with pirateIB, ibresources links
+- [x] **Community Links**: r/IBO, IBO Discord
+- [x] **Footer CTA** with "Enter the Vault" button
 
-### Initial Data
-- **168 resources** seeded via migration
-- **7 marked `is_new: true`** (last week of September)
-- **2 demo pending submissions** for admin testing
-- **Kognity** (formerly Cognity) → `https://app.kognity.com`
+### Main Board (`/board`)
+- [x] **Trello-style column grid** with 3 pinned columns + 18 category columns
+- [x] **Pinned Columns**: Trending This Week, Favorites, New Tools (always first when "All Columns" selected)
+- [x] **Subject filter bar**: All Columns, Maths & Sciences, Humanities & Languages, Core/Repos/Exemplars, Calculators/AI/Media
+- [x] **Advanced filter bar**: Cost (Free/Freemium), Category, Status, Sort (name/category/rating/date/clicks asc/desc), quick filters
+- [x] **Column reordering** via drag-and-drop (only in reorder mode from Settings)
+- [x] **Column order persistence** in localStorage
+- [x] **Pinned columns hide** when subject filter ≠ "All Columns"
+- [x] **Filter persistence** on reload (localStorage)
+- [x] **Click tracking** for Trending algorithm (localStorage)
 
----
+### Resource Items
+- [x] **Entire card clickable** → opens details modal
+- [x] **Resource name** button → opens details modal
+- [x] **External link icon on hover** → opens in new tab
+- [x] **Favorite toggle** with star icon
+- [x] **Broken link indicator** (red triangle)
+- [x] **NEW badge** for new resources
+- [x] **Hover tooltip** with description, rating stars, cost badge, visit link
+- [x] **Click tracking** for Trending (localStorage)
 
-## 🔐 Admin Authentication
+### Category View (`/category/:slug`)
+- [x] **Full category page** with filtered resources
+- [x] **PDF export** with Vault IB logo, category title, date
+- [x] **Report broken link** modal
+- [x] **Add to favorites** modal
 
-### Current Implementation (Demo Mode)
-- **Location**: `src/components/AdminView.tsx`
-- **Mechanism**: bcryptjs hash comparison in browser
-- **Env Var**: `VITE_ADMIN_PASSWORD_HASH` (bcrypt hash, cost 12)
-- **Fallback**: `ibvault2025` / `admin` when env var not set
-- **Session**: `sessionStorage.setItem('ibvault_admin_auth', 'true')`
+### Admin Panel (`/admin`)
+- [x] **Password protection** (bcrypt hash in `VITE_ADMIN_PASSWORD_HASH`)
+- [x] **Pending submissions** tab (approve/reject)
+- [x] **All resources table** with link health (broken/approved)
+- [x] **Star rating system** (1-5 stars, click to rate)
+- [x] **Comprehensive filters**: Cost, Category, Status, Rating
+- [x] **Advanced sort** (name/category/rating/date/clicks asc/desc)
+- [x] **Quick filter presets**: Clear All, Show Broken Only, Free & Approved
+- [x] **Resource rating** (click stars to rate 1-5)
+- [x] **Approve/Reject** submissions
+- [x] **Toggle broken/healthy** status
+- [x] **Reset to defaults** (168 initial resources)
 
-### Generate Hash
-```bash
-node -e "console.log(require('bcryptjs').hashSync('your-password', 12))"
-# Output: $2a$12$...
-```
+### PDF Export
+- [x] **Clickable links** in exported PDF
+- [x] **Vault IB logo** embedded as inline SVG
+- [x] **Category title**, export date, resource count
+- [x] **Table** with #, Name (clickable link), Description, Access, Rating (stars)
+- [x] **Footer** with Vault IB branding, primary URL, mirror URL
+- [x] **Vault IB logo** embedded in PDF header
 
-### Production Upgrade Path
-Replace with Supabase Auth:
-1. Enable Email provider in Supabase
-2. Create admin user in Dashboard
-3. Update `AdminView.tsx` to use `supabase.auth.signInWithPassword()`
+### Navigation
+- [x] **TopBar**: Dashboard link, Suggest Link, Search (⌘K), Dark mode toggle, Settings
+- [x] **Sidebar**: Dashboard, Home, Favorites, Trending, New Tools, Activity Log, Categories, Suggest Resource, About, Admin, PDF Export, r/IBO link
+- [x] **Routing**: `/`, `/dashboard`, `/board`, `/category/:slug`, `/about`, `/submit`, `/admin`
+- [x] **Hash-based routing** with popstate support
 
----
-
-## 🚀 Deployment
-
-### Vercel (Primary)
-| Setting | Value |
-|---------|-------|
-| Framework | Vite |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
-| Install Command | `npm install` |
-| SPA Rewrite | `vercel.json` → `rewrites: [{source: "/(.*)", destination: "/index.html"}]` |
-
-### Required Environment Variables (Type: **Config**, NOT Secret)
-
-| Variable | Source | Purpose |
-|----------|--------|---------|
-| `VITE_SUPABASE_URL` | Supabase Settings → API → Project URL | Supabase connection |
-| `VITE_SUPABASE_ANON_KEY` | Supabase Settings → API → anon public | Client auth (RLS protects data) |
-| `VITE_ADMIN_PASSWORD_HASH` | Generated via bcrypt | Admin panel access |
-
-> **Critical**: Must be **Config** type in Vercel. "Secret" = write-only, never sent to browser.
-
-### Vercel Authentication Protection (Blocks Public Access)
-**Disable**: Settings → General → Vercel Authentication → **OFF** → Redeploy
-
-### Custom Domain Options
-- **Free subdomain**: Cloudflare Pages → `ib-vault.pages.dev`
-- **Custom domain**: Vercel/Cloudflare → Add in Domains tab → DNS config
-- **GitHub Pages**: `yourusername.github.io` (requires separate repo)
-
-### Cloudflare Pages (Alternative Free Hosting)
-- Clean URL: `ib-vault.pages.dev` (no random suffix)
-- Same build settings
-- Free custom domain at wholesale pricing later
+### Supabase Integration
+- [x] **Schema**: `resources` table with RLS policies
+- [x] **Policies**: Public read (approved), Public insert (pending), Admin full access
+- [x] **Migration**: 168 initial resources with September 2026 dates
+- [x] **Hybrid mode**: Works offline with localStorage fallback
 
 ---
 
-## 🛠 Local Development
+## 🔄 IN PROGRESS / PENDING
 
-```bash
-# 1. Clone
-git clone https://github.com/sarang-cmd/ib-vault
-cd ib-vault
+### High Priority
+- [ ] **Research and add 10+ verified AI study tools for IB**
+- [ ] **Add smooth animations/transitions** between views (Framer Motion or CSS transitions)
+- [ ] **Make PDF export links clickable** (verify in production)
+- [ ] **Add PDF print options modal** (checkboxes: include footer, logo, remove NEW badges, custom footer)
+- [ ] **Polish printing** with Vault IB logo, better page breaks
+- [ ] **Add smooth loading animation** (skeleton loaders)
+- [ ] **Add hover card positioning logic** (left/right based on screen position)
 
-# 2. Install
-npm install
-
-# 3. Env file
-copy .env.example .env.local
-# Edit with real values
-
-# 4. Run
-npm run dev        # http://localhost:5173
-npm run build      # Production build
-npm run preview    # Preview build locally
-npm run typecheck  # TypeScript check
-```
+### Medium Priority
+- [ ] **Update README.md** with mirror links, new features, dashboard info
+- [ ] **Update DEPLOYMENT_GUIDE.md** with new features, dashboard route, PDF options
+- [ ] **Update PROJECT_BRAIN.md** with all changes (this file)
+- [ ] **Create agents.md/CLAUDE.md** for other agents
+- [ ] **Add hover card positioning logic** (left/right based on screen position)
+- [ ] **Quality-of-life improvements and polish**
 
 ---
 
-## 📁 Project Structure
+## 🐛 KNOWN ISSUES
+
+### Fixed (but verify in production)
+- [x] **Dark mode toggle** - fixed with CSS variables
+- [x] **Kognity in AI Tools** - moved to Textbooks & eBooks category
+- [x] **White text on dark headers** - fixed with CSS variables
+- [x] **Column reordering persistence** - pinned columns always first
+- [x] **Filter persistence on reload** - localStorage sync
+- [x] **Humanities & Languages filter** - fixed categories
+- [x] **Pinned columns hide on filter** - only show when "All Columns"
+- [x] **Resource card clickable** - entire card opens details
+- [x] **External link icon on hover** - opens in new tab
+- [x] **Click tracking for Trending** - localStorage
+- [x] **Column gap at top** - added `pt-2` to column body
+
+> **⚠️ PRODUCTION VERIFICATION NEEDED**: All fixes above are implemented in code and pushed to GitHub, but **have not been verified in production** at `https://vault-ib.vercel.app` (or `https://vault-ib-six.vercel.app`). Need to manually verify each fix in the live Vercel deployment after the latest commit is deployed.
+
+### Remaining
+- [ ] **PDF export links** - verify clickable in browser print dialog
+- [ ] **Hover tooltip positioning** - left/right based on screen edge
+- [ ] **Smooth view transitions** - Framer Motion or CSS
+- [ ] **Loading skeleton** - for initial load and category switches
+- [ ] **Hover tooltip positioning** - left/right based on viewport edge
+
+---
+
+## 📁 PROJECT STRUCTURE
 
 ```
 IB-Vault_Public/
 ├── public/
-│   ├── favicon.svg              # Vault+book icon (brand colors)
-│   └── (other favicon formats)
+│   ├── favicon.svg              # Vault IB logo (terracotta vault + IB)
+│   ├── favicon-*.png            # Various sizes
+│   └── site.webmanifest
 ├── src/
-│   ├── components/              # All React components
-│   │   ├── AdminView.tsx        # Admin panel (auth, approve, reject, toggle)
-│   │   ├── AboutView.tsx        # Stats, activity log, contribute
-│   │   ├── BoardView.tsx        # Main category board
-│   │   ├── CategoryView.tsx     # Single category detail
-│   │   ├── SubmitModal.tsx      # Resource submission
-│   │   └── ... (15+ components)
+│   ├── components/
+│   │   ├── DashboardView.tsx    # Landing page at /dashboard
+│   │   ├── BoardView.tsx        # Main column grid with filters
+│   │   ├── Column.tsx           # Individual column component
+│   │   ├── ResourceItem.tsx     # Clickable card with hover tooltip
+│   │   ├── CategoryView.tsx     # Single category page
+│   │   ├── AboutView.tsx        # About page with activity log
+│   │   ├── SubmitModal.tsx      # Submit resource form
+│   │   ├── AdminView.tsx        # Admin panel with full features
+│   │   ├── SearchModal.tsx      # Global search (⌘K)
+│   │   ├── SettingsModal.tsx    # Density, favorites, reorder mode, admin
+│   │   ├── ResourceDetailModal.tsx # Full resource details
+│   │   ├── ReportModal.tsx      # Report broken link
+│   │   ├── AddFavoriteModal.tsx # Quick favorite selector
+│   │   ├── TopBar.tsx           # Dashboard link, search, dark mode, settings
+│   │   ├── Sidebar.tsx          # Nav drawer with Dashboard link
+│   │   ├── Column.tsx           # Column with drag handle
+│   │   ├── CategoryIcon.tsx     # Category icons
+│   │   ├── AddFavoriteModal.tsx # Quick favorite selector
+│   │   ├── ReportModal.tsx      # Report broken link
+│   │   ├── SubmitModal.tsx      # Submit resource
+│   │   ├── ResourceDetailModal.tsx # Full details modal
+│   │   ├── SearchModal.tsx      # Global search
+│   │   └── SettingsModal.tsx    # Settings with reorder mode toggle
+│   ├── context/
+│   │   └── ThemeContext.tsx     # Dark/light theme provider
 │   ├── data/
-│   │   ├── resources.ts         # 168 resources (SOURCE OF TRUTH)
-│   │   ├── resources.json       # Mirror for migration generation
-│   │   ├── categories.ts        # 33 category definitions
-│   │   └── activityLog.ts       # September 2026 activity entries
+│   │   ├── categories.ts        # 18 categories + 3 pinned columns
+│   │   ├── resources.ts         # 168 resources (source of truth)
+│   │   ├── resources.json       # Mirror for migration
+│   │   └── activityLog.ts       # Activity log entries
 │   ├── lib/
 │   │   ├── supabase.ts          # Hybrid data layer (Supabase + localStorage)
 │   │   ├── supabaseClient.ts    # Supabase client init
-│   │   └── pdfExport.ts         # PDF generation
+│   │   └── pdfExport.ts         # PDF export with logo, clickable links
 │   ├── types.ts                 # TypeScript interfaces
-│   ├── App.tsx                  # Main app, routing, state
-│   └── main.tsx                 # Entry point
+│   ├── App.tsx                  # Main app with routing
+│   ├── main.tsx                 # Entry point
+│   ├── index.css                # Tailwind + CSS variables for themes
+│   └── vite-env.d.ts
 ├── supabase/
 │   └── migrations/
-│       └── 01_resources.sql     # Schema + 168 seeds + RLS
+│       └── 01_resources.sql     # Schema + 168 seed + RLS policies
 ├── scripts/
-│   ├── update_migration_dates.py   # Legacy (randomized dates)
-│   └── regenerate_migration.py     # Current: regenerates from resources.ts
-├── .env.example               # Env template
-├── vercel.json                # SPA routing + headers
+│   └── regenerate_migration.py  # Regenerate migration from resources.ts
+├── .env.example                 # Env template
+├── vercel.json                  # SPA routing + security headers
 ├── package.json
-├── DEPLOYMENT_GUIDE.md        # Click-by-click deployment
-└── PROJECT_BRAIN.md           # This file
+├── tsconfig.json
+├── DEPLOYMENT_GUIDE.md          # Click-by-click deployment guide
+├── PROJECT_BRAIN.md             # This file
+└── README.md
 ```
 
 ---
 
-## 🔧 Key Files to Modify
+## 🔧 TECH DECISIONS
 
-| Task | File(s) |
-|------|---------|
-| Add/edit resources | `src/data/resources.ts` → run `python scripts/regenerate_migration.py` → run migration in Supabase |
-| Add categories | `src/data/categories.ts` + `resources.ts` |
-| Update admin auth | `src/components/AdminView.tsx` |
-| Change styling | `src/index.css` (Tailwind) + component classes |
-| Update About page | `src/components/AboutView.tsx` + `src/data/activityLog.ts` |
-| Favicon | `public/favicon.svg` + regenerate at realfavicongenerator.net |
-
----
-
-## 🐛 Common Issues & Fixes
-
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| Shows localStorage data, not Supabase | Vercel env vars = "Secret" | Change to **"Config"** → Redeploy |
-| 404 on refresh | SPA routing missing | Verify `vercel.json` has rewrite rule |
-| Admin login fails | Wrong hash / env var missing | Regenerate hash → Update Vercel → Redeploy |
-| Approve/Reject does nothing | RLS blocks UPDATE | Run updated migration (has UPDATE policy) |
-| "Supabase configured: false" in console | Env vars not injected | Vercel: Config type + Redeploy |
-| Random URL suffix (`-six`) | `ib-vault.vercel.app` taken | Rename project or add custom domain |
-| Can't access in incognito | Vercel Auth Protection ON | Settings → General → Vercel Authentication → OFF |
+| Decision | Rationale |
+|----------|-----------|
+| **React 19 + Vite** | Fast HMR, modern React features |
+| **Tailwind CSS v4** | CSS-first config, native dark mode support |
+| **Supabase (Postgres)** | Free tier generous, RLS for authz |
+| **Vercel** | Free tier generous, SPA routing, auto-deploy |
+| **localStorage fallback** | Works offline, no backend needed for demo |
+| **Hash routing** | Works on static hosting, no server config |
+| **bcryptjs in browser** | Admin auth without backend |
+| **Click tracking localStorage** | Trending algorithm without backend |
+| **CSS variables for theming** | No Tailwind dark: prefix needed |
+| **Hash-based routing** | Works on static hosting |
 
 ---
 
-## 📋 Operational Checklist
+## 🚀 DEPLOYMENT CHECKLIST
 
-### After Every Deploy
-- [ ] Homepage loads (168 resources)
-- [ ] DevTools Console: No red errors
-- [ ] Submit resource → Appears in Supabase as `pending`
-- [ ] Admin login works
-- [ ] Approve pending → Moves to approved
-- [ ] Toggle broken/healthy works
-- [ ] Favicon shows
+### Supabase
+- [ ] Create project at supabase.com
+- [ ] Run `supabase/migrations/01_resources.sql` in SQL Editor
+- [ ] Copy Project URL → `VITE_SUPABASE_URL`
+- [ ] Copy anon public key → `VITE_SUPABASE_ANON_KEY`
 
-### Monthly
-- [ ] Check Supabase usage (Dashboard → Reports)
-- [ ] Verify Vercel bandwidth (Dashboard → Analytics)
-- [ ] Run migration if resources.ts updated
+### Vercel
+- [ ] Import GitHub repo
+- [ ] Framework: Vite (auto-detected)
+- [ ] Build: `npm run build`
+- [ ] Output: `dist`
+- [ ] Add env vars (Config type, NOT Secret):
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_ANON_KEY`
+  - `VITE_ADMIN_PASSWORD_HASH` (generate: `node -e "console.log(require('bcryptjs').hashSync('password', 12))"`)
+- [ ] Disable "Vercel Authentication" in Settings → General
+- [ ] Redeploy after env vars
 
----
-
-## 📈 Scaling Beyond Free Tier
-
-| Need | Upgrade Path | Cost |
-|------|--------------|------|
-| More DB storage | Supabase Pro | $25/mo (8GB) |
-| More bandwidth | Vercel Pro | $20/mo (1TB) |
-| Real auth | Supabase Auth | Included |
-| Background jobs | Supabase Edge Functions | Included |
-| Custom domain | Cloudflare Registrar | ~$8-10/yr (.com) |
-
----
-
-## 🔗 Important Links
-
-| Service | URL |
-|---------|-----|
-| **GitHub Repo** | https://github.com/sarang-cmd/ib-vault |
-| **Vercel Dashboard** | https://vercel.com/dashboard |
-| **Supabase Dashboard** | https://supabase.com/dashboard/project/ib-vault |
-| **Vercel Deployment** | https://ib-vault-six.vercel.app |
-| **Admin Panel** | https://ib-vault-six.vercel.app/admin |
-| **Supabase Table Editor** | https://supabase.com/dashboard/project/ib-vault/editor/resources |
-| **Deployment Guide** | `DEPLOYMENT_GUIDE.md` |
+### Post-Deploy Verification
+- [ ] Homepage loads at `https://your-app.vercel.app`
+- [ ] Dashboard at `/dashboard`
+- [ ] Board at `/board` with 168 resources
+- [ ] Admin at `/admin` with password
+- [ ] Submit resource → appears in Supabase as `pending`
+- [ ] Admin → Approve → appears on board
+- [ ] PDF export → clickable links in print dialog
+- [ ] Dark mode toggle works
+- [ ] Column reorder persists in localStorage
 
 ---
 
-## 🧠 Session History (Key Decisions)
+## 📊 DATA SUMMARY
 
-### 2026-09-19: Production Readiness
-1. **Hybrid data layer** implemented (Supabase + localStorage fallback)
-2. **Vercel deployment** configured with SPA routing
-3. **Environment variables** identified as "Config" not "Secret"
-4. **Migration generated** from `resources.ts` (168 resources)
-5. **Admin auth** with bcrypt hash verification
-6. **RLS policies** for public read/insert/update
-7. **Approve/reject fix**: Changed to UPDATE + added UPDATE policy
-8. **Kognity rename** (Cognity → Kognity, URL fixed)
-10. **Favicon** created matching brand palette
-12. **Pushed to GitHub** → Vercel auto-deploy
-
-### Files Changed This Session
-- `src/lib/supabase.ts` - Hybrid data layer, approve uses UPDATE
-- `src/lib/supabaseClient.ts` - Supabase client init
-- `src/components/AdminView.tsx` - bcrypt auth, removed default password hint
-- `src/components/AboutView.tsx` - lastUpdate = 2025-09-15
-- `src/data/resources.ts` - Source of truth (168 resources)
-- `src/data/resources.json` - Mirror
-- `src/data/activityLog.ts` - September activity entries
-- `supabase/migrations/01_resources.sql` - Schema + seeds + RLS
-- `public/favicon.svg` - Brand icon
-- `vercel.json` - SPA routing + security headers
-- `DEPLOYMENT_GUIDE.md` - Complete deployment instructions
-- `PROJECT_BRAIN.md` - This file
+- **168 resources** across 18 categories + 3 pinned columns
+- **Categories reordered**: All Subjects (5) → HSLs (3) → SLS (3) → Core & Tools (7)
+- **Pinned columns**: Trending This Week, Favorites, New Tools
+- **Subject groups**: All Columns, Maths & Sciences, Humanities & Languages, Core/Repos/Exemplars, Calculators/AI/Media
+- **Advanced filters**: Cost, Category, Status, Sort (5 fields × asc/desc)
+- **Quick filters**: Clear All, Show Broken, Free & Approved
 
 ---
 
-## 🎯 Next Steps (If Needed)
+## 🔐 ENVIRONMENT VARIABLES
 
-1. **Custom domain** via Cloudflare Pages or Vercel
-2. **Supabase Auth** for production admin (replace bcrypt)
-3. **Analytics** (Vercel Analytics / PostHog)
-4. **Automated link checking** (cron job via Supabase Edge Functions)
-5. **Search indexing** (Algolia / Meilisearch if needed)
-6. **PWA manifest** for installability
-
----
-
-## 📞 Emergency Contacts
-
-| Issue | Contact |
-|-------|---------|
-| Vercel down | https://vercel-status.com |
-| Supabase down | https://status.supabase.com |
-| GitHub issues | https://github.com/sarang-cmd/ib-vault/issues |
-| Supabase Discord | https://discord.supabase.com |
+```bash
+# Required (Config type in Vercel, NOT Secret)
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+VITE_ADMIN_PASSWORD_HASH=$2a$12$...  # bcrypt hash of admin password
+```
 
 ---
 
-*Last updated: 2025-09-19 — This document captures all critical knowledge from the development session. Update when architecture, deployment, or data changes.*
+## 📝 NEXT SESSION PRIORITIES
+
+1. **Add 10+ verified AI study tools** for IB
+2. **Implement hover tooltip positioning** (viewport edge detection)
+3. **Add smooth view transitions** (AnimatePresence + Framer Motion)
+4. **Add loading skeletons** for initial load
+5. **Update documentation** (README, DEPLOYMENT_GUIDE, PROJECT_BRAIN)
+6. **Create agents.md/CLAUDE.md** for other agents
+7. **Verify PDF links clickable** in production
+8. **Add hover tooltip edge detection** (viewport edges)
+
+---
+
+*Generated: 2025-09-19 | This file is the single source of truth for Vault IB project state*

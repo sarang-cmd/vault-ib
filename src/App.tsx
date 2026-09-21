@@ -179,14 +179,14 @@ export function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen flex flex-col bg-[#F4F2ED] text-[#1A1A1A]">
+      <div className="min-h-screen flex flex-col bg-[var(--bg-page)] text-[var(--text-body)]">
         <Analytics />
         <SpeedInsights />
         {isLoading && (
-          <div className="fixed inset-0 z-50 bg-[#F4F2ED] flex items-center justify-center">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-page)] flex items-center justify-center">
             <div className="text-center">
-              <div className="w-10 h-10 border-3 border-[#8B3A2F] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-              <p className="text-sm text-[#666666]">Loading Vault IB...</p>
+              <div className="w-10 h-10 border-3 border-[var(--brand-logo)] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-sm text-[var(--text-muted)]">Loading Vault IB...</p>
             </div>
           </div>
         )}
@@ -353,7 +353,7 @@ export function App() {
         <button
           type="button"
           onClick={handleExportCurrentPdf}
-          className="w-11 h-11 rounded-full bg-[#1A1A1A] text-white hover:bg-[#8B3A2F] shadow-lg flex items-center justify-center transition-colors cursor-pointer group focus:outline-none focus:ring-2 focus:ring-[#8B3A2F]"
+          className="w-11 h-11 rounded-full bg-[var(--text-primary)] text-[var(--bg-page)] hover:bg-[var(--brand-logo)] shadow-lg flex items-center justify-center transition-colors cursor-pointer group focus:outline-none focus:ring-2 focus:ring-[var(--brand-logo)]"
           title="Export current view as printable PDF"
           aria-label="Export as printable PDF"
         >
